@@ -11,41 +11,59 @@ function App() {
   const [currentUser, setCurrentUser] = useState("");
   const [posts, setPosts] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/posts")
-    .then((res) => res.json())
-    .then((data) => {
-      setPosts(data)
-      setIsLoaded(true)
-    })
+    postRequest()
   }, []);
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   setLogin({name: user, password: pass});
-  //   setUser("");
-  //   setPass("");
-  // };
+  const postRequest = async () => {
+    const response = await fetch("http://localhost:5000/posts")
+    const data = await response.json();
+    setPosts(data)
+    setIsLoaded(true)
+  }
 
-  // const onChange = (event) => {
-  //   if (event.target.name === 'userName') {
-  //     setUser(event.target.value);
-  //   } else {
-  //     setPass(event.target.value);
-  //   };
-  // };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLogin({name: user, password: pass});
+    fetchUser(login);
+    setUser("");
+    setPass("");
+  };
 
-  // const fetchAPI = async () => {
-  //   const response = await fetch("http://localhost:5000/users");
-  //   const data = await response.json();
-  //   setUserList(data);
-  // }
+  const onChange = (event) => {
+    if (event.target.name === 'userName') {
+      setUser(event.target.value);
+    } else {
+      setPass(event.target.value);
+    };
+  };
 
-  // let isDisabled = user === "" && pass ==="";
+  const fetchUser = async (loginObj) => {
+    const response = await fetch("http://localhost:5000/users", {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Conent-Type': 'application/json'
+      },
+      body: JSON.stringify(loginObj)
+    });
+    const data = await response.json();
+    console.log(data);
+    // if (data.name === loginObj.name) {
+    //   setUserLoaded(true)
+    //   return data;
+    // } else {
+    //   return console.log("error");
+    // }
+    
+  }
+
+  let isDisabled = user === "" && pass ==="";
   return (
     <div className="App">
-      {/* <LoginBox handleSubmit={handleSubmit} onChange={onChange} userVal={user} passVal={pass} isDisabled={isDisabled}></LoginBox> */}
+      <LoginBox handleSubmit={handleSubmit} onChange={onChange} userVal={user} passVal={pass} isDisabled={isDisabled}></LoginBox>
       <Feed isLoaded={isLoaded} content={posts}/>
     </div>
   );
