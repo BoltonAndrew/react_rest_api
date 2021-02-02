@@ -1,10 +1,5 @@
 
 const Feed = (props) => {
-
-    
-
-        
-
     if (props.isLoaded) {
         return(
             <div className='feed'>
