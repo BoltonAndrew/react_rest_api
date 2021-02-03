@@ -1,3 +1,4 @@
+import './index.css';
 
 const Feed = (props) => {
     if (props.isLoaded) {
