@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     postRequest()
-  }, []);
+  });
 
   const postChange = (event) => {
     setPostVal(event.target.value)
@@ -50,11 +50,6 @@ function App() {
     };
   };
 
-  const submitPost = (event) => {
-    event.preventDefault();
-    savePost();
-  }
-
   const fetchUser = async (loginObj) => {
     try {
       const response = await fetch(`http://localhost:5000/users/${loginObj.name}`);
@@ -69,8 +64,7 @@ function App() {
     
   }
 
-  const savePost = async (e) => {
-    e.preventDefault()
+  const savePost = async () => {
     try {
       const response = await fetch(`http://localhost:5000/posts/${currentUser.id}`,
       {
