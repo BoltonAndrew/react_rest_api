@@ -11,7 +11,7 @@ function App() {
   const [posts, setPosts] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
   const [userLoaded, setUserLoaded] = useState(false);
-  const [postVal, setPostVal] = useState();
+  const [postVal, setPostVal] = useState("");
 
   useEffect(() => {
     postRequest()
@@ -30,10 +30,15 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (event.target.name === 'login') {
     const loginObj = {name: user, password: pass};
     fetchUser(loginObj);
     setUser("");
     setPass("");
+    } else {
+      savePost();
+      setPostVal("");
+    }
   };
 
   const onChange = (event) => {
@@ -53,10 +58,7 @@ function App() {
     try {
       const response = await fetch(`http://localhost:5000/users/${loginObj.name}`);
       const data = await response.json();
-      console.log(loginObj);
-      console.log(data[0])
       if (loginObj.password === data[0].password) {
-        console.log("I got here")
         setCurrentUser({name: data[0].name, id: data[0]._id});
         setUserLoaded(true);
       }
@@ -66,16 +68,15 @@ function App() {
     
   }
 
-  const savePost = async (userId) => {
+  const savePost = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/users${currentUser.id}`,
+      const response = await fetch(`http://localhost:5000/posts/${currentUser.id}`,
       {
         method: 'POST',
-        headers: 'application/json',
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({content: postVal})
       });
       const data = await response.json();
-      console.log(data)
     } catch (error) {
       console.log("I didn't post")
     }
@@ -85,7 +86,7 @@ function App() {
   return (
     <div className="App">
       <LoginBox handleSubmit={handleSubmit} onChange={onChange} userVal={user} passVal={pass} isDisabled={isDisabled}></LoginBox>
-      <Post onsubmit={submitPost} postVal={postVal} onChange={postChange}/>
+      <Post onsubmit={handleSubmit} postVal={postVal} onChange={postChange}/>
       <Feed isLoaded={isLoaded} content={posts}/>
     </div>
   );
