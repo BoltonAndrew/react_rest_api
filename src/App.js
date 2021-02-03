@@ -36,7 +36,8 @@ function App() {
     setUser("");
     setPass("");
     } else {
-      savePost();
+      console.log("else clause")
+      savePost(event);
       setPostVal("");
     }
   };
@@ -68,7 +69,8 @@ function App() {
     
   }
 
-  const savePost = async () => {
+  const savePost = async (e) => {
+    e.preventDefault()
     try {
       const response = await fetch(`http://localhost:5000/posts/${currentUser.id}`,
       {
@@ -77,6 +79,7 @@ function App() {
         body: JSON.stringify({content: postVal})
       });
       const data = await response.json();
+      console.log(data);
     } catch (error) {
       console.log("I didn't post")
     }
@@ -86,7 +89,7 @@ function App() {
   return (
     <div className="App">
       <LoginBox handleSubmit={handleSubmit} onChange={onChange} userVal={user} passVal={pass} isDisabled={isDisabled}></LoginBox>
-      <Post onsubmit={handleSubmit} postVal={postVal} onChange={postChange}/>
+      <Post onSubmit={handleSubmit} postVal={postVal} onChange={postChange}/>
       <Feed isLoaded={isLoaded} content={posts}/>
     </div>
   );
